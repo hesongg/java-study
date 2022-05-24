@@ -183,3 +183,69 @@
 	movies.entrySet().removeIf( entry -> entry.getValue < 10);
     ```
 
+</br>
+
+
+#### 개선 ConcurrentHashMap
+
+- ```ConcurrentHashMap``` 클래스는 동시성 친화적이며 최신 기술을 반영한 HashMap 버전이다.
+	- 내부 자료구조의 특정 부분만 잠궈 동시 추가, 갱신 작업을 허용한다. 
+	- 따라서 동기화된 Hashtable 버전에 의해 읽기 쓰기 연산 성능이 월등하다. (참고로 표준 HashMap은 비동기로 동작함)
+
+- 리듀스와 검색
+	- ```ConcurrentHashMap``` 은 스트림에서 봤던 것과 비슷한 종류의 세 가지 새로운 연산을 지원한다.
+	- ```forEach``` : 각 (키, 값) 쌍에 주어진 액션을 실행
+	- ```reduce``` : 모든 쌍을 제공된 리듀스 함수를 이용해 결과로 합침
+	- ```search``` : 널이 아닌 값을 반환할 때까지 각 쌍에 함수를 적용
+
+	- 다음 처럼 키에 함수받기, 값, Map.Entry, (키, 값) 인수를 이용한 네 가지 연산 형태를 지원한다.
+		- 키, 값으로 연산(forEach, reduce, search)
+		- 키로 연산(forEachKey, reduceKeys, searchKeys)
+		- 값으로 연산(forEachValue, reduceValues, searchValues)
+		- Map.Entry 객체로 연산(forEachEntry, reduceEntries, searchEntries)
+
+		- 이들 연산은 ```ConcurrentHashMap``` 의 상태를 잠그지 않고 연산을 수행한다는 점을 주목하자. 
+			- 따라서 이들 연산에 제공한 함수는 계산이 진행되는 동안 바뀔 수 있는 객체, 값, 순서등에 의존하지 않아야한다.
+
+		- 또한 이들 연산에 병렬성 기준 값(threshold)을 지정해야 한다. 
+			- 맵의 크기가 주어진 기준 값 보다 작으면 순차적으로 연산을 실행한다. 
+			- 기준 값을 1로 지정하면 공통 스레드 풀을 이용해 병렬성을 극대화한다. 
+			- Long.MAX_VALUE 를 기준 값으로 설정하면 한 개의 스레드로 연산을 실행한다. 기준 값 규칙을 따르는 것이 좋다.
+
+			- ```reduceValues``` 메소드를 이용해 맵의 최대 값을 찾는 예제
+				```java
+				ConcurrentHashMap<String, Long> map = new ConcurrentHashMap<>();
+
+				long parallelismThreshold = 1;
+
+				Optional<Integer> maxValue = Option.ofNullable(map.reduceValues(parallelismThreshold, Long::max));
+				```
+	
+	- int, long, double 등의 기본 값에는 전용 each reduce 연산이 제공되므로 ```reduceValuesToInt```, ```reduceKeysToLong``` 등을 이용하면 
+  	박싱 작업을 할 필요가 없고 효율적으로 작업을 처리 할 수 있다.
+
+
+- 계수
+	- ```ConcurrentHashMap``` 클래스는 맵의 매핑 개수를 반환하는 ```mappingCount``` 메소드를 제공한다. 
+	- 기존의 size 메소드대신 새 코드에서는 int를 반환하는 ```mappingCount``` 메소드를 사용하는 것이 좋다. 
+	  그래야 매핑의 개수가 int의 범위를 넘어서는 이후의 상황을 대처할 수 있기 때문이다.
+
+- 집합뷰
+	- ```ConcurrentHashMap``` 클래스는 ```ConcurrentHashMap``` 을 집합뷰로 반환하는 ```keySet```이라는 새메서드를 제공한다. 
+		- 맵을 바꾸면 집합도 바뀌고 반대로 집합을 바꾸면 맵도 영향을 받는다. 
+		- ```newKeySet``` 이라는 새 메서드를 이용해 ```ConcurrentHashMap``` 으로 유지되는 집합을 만들 수 도 있다.
+
+</br>
+
+#### 정리
+- 자바 9는 적의 원소를 포함하여 바꿀 수 없는 리스트, 집합, 맵을 쉽게 만들 수 있도록 
+  ```List.of```, ```Set.of```, ```Map.of```, ```Map.ofEntries``` 등의 컬렉션 팩토리를 지원한다.
+	- 이들 컬렉션 팩토리가 반환한 객체는 만들어진 다음 바꿀 수 없다.
+
+- List 인터페이스는 ```removeIf```, ```replaceAll```, ```sort``` 세가지 디폴트 메소드를 지원한다.
+
+- Set 인터페이스는 ```removeIf``` 디폴트 메소드를 지원한다.
+
+- Map 인터페이스는 자주 사용하는 패턴과 버지를 방지할수 있도록 다양한 디폴트 메소드를 지원한다.
+
+- ConcurrentHashMap 은 Map 에서 상속받은 새 디폴트 메소드를 지원함과 동시에 스레드 안정성도 제공한다.
