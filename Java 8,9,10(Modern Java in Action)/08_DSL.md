@@ -5,7 +5,7 @@
 
 </br></br>
 
-# Chapter 10. 람다를 이용한 도메인 전용 언어
+# 람다를 이용한 도메인 전용 언어
 
 ### 도메인 전용 언어(Domain-Specific Languages, DSL)
 
