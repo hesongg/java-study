@@ -652,46 +652,46 @@
 			  ```	
 			  
 		- 헬퍼 클래스 TradeBuilder 와 StockBuilder 는 내부적으로 메서드 체인 패턴을 구현해 플루언트 API를 제공한다.
-			  ```java
-                  public static class TradeBuilder {
+			```java
+			public static class TradeBuilder {
 
-                    private Trade trade = new Trade();
+			    private Trade trade = new Trade();
 
-                    public TradeBuilder quantity(int quantity) {
-                      trade.setQuantity(quantity);
-                      return this;
-                    }
+			    public TradeBuilder quantity(int quantity) {
+			      trade.setQuantity(quantity);
+			      return this;
+			    }
 
-                    public TradeBuilder at(double price) {
-                      trade.setPrice(price);
-                      return this;
-                    }
+			    public TradeBuilder at(double price) {
+			      trade.setPrice(price);
+			      return this;
+			    }
 
-                    public StockBuilder stock(String symbol) {
-                      return new StockBuilder(this, trade, symbol);
-                    }
-                  }
-
-                  public static class StockBuilder {
-
-                    private final TradeBuilder builder;
-                    private final Trade trade;
-                    private final Stock stock = new Stock();
-
-                    private StockBuilder(TradeBuilder builder, Trade trade, String symbol) {
-                      this.builder = builder;
-                      this.trade = trade;
-                      stock.setSymbol(symbol);
-                    }
-
-                    public TradeBuilder on(String market) {
-                      stock.setMarket(market);
-                      trade.setStock(stock);
-                      return builder;
-                    }
-                  }
+			    public StockBuilder stock(String symbol) {
+			      return new StockBuilder(this, trade, symbol);
+			    }
 			  }
-			  ```
+
+			  public static class StockBuilder {
+
+			    private final TradeBuilder builder;
+			    private final Trade trade;
+			    private final Stock stock = new Stock();
+
+			    private StockBuilder(TradeBuilder builder, Trade trade, String symbol) {
+			      this.builder = builder;
+			      this.trade = trade;
+			      stock.setSymbol(symbol);
+			    }
+
+			    public TradeBuilder on(String market) {
+			      stock.setMarket(market);
+			      trade.setStock(stock);
+			      return builder;
+			    }
+			  }
+			}
+			```
 		
 		- 이 예제 에서는 위에서 설명한 세 가지 DSL 패턴을 혼용해 가독성 있는 DSL을 만드는 방법을 보여준다.
 		
