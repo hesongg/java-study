@@ -21,7 +21,48 @@
 
 <br>
 
-.. 이어서 정리
+### Generic(제네릭) 사용방법
+
+- 보통 제네릭은 아래 표의 타입들로 쓰인다. (특별한 제한은 없음)
+
+    |타입|설명|
+    |----|----|
+    |\<T>|Type|
+    |\<E>|Element|
+    |\<K>|Key|
+    |\<V>|Value|
+    |\<N>|Number|
+
+- HashMap과 같이 Key로 Value를 얻는 목적의 인터페이스와 클래스를 구현한다고 가정하자.
+    ```java
+    public interface KeyValue <K, V> {
+        public V get(K key);
+    }
+
+    public static class keyValueClass<K, V> implements KeyValue <K, V> {
+        @Override
+        public V get(K key) {
+            V value = ...; //key에 매핑되는 값을 정한다
+            return value;
+        }
+    }
+
+    public static void main(String[] args) {
+        KeyValue<String, Integer> kv1 = new keyValueClass<String, Integer>();
+        KeyValue<Double, Boolean> kv2 = new keyValueClass<Double, Boolean();
+    }
+    ```
+    
+    - Key와 Value의 데이터 타입을 외부에서 클래스 생성 시에 정하고 싶을 때 위와 같이 인터페이스와 클래스를 생성하여 구현 가능
+        - 객체 생성 시에 구체적인 타입을 명시한다.
+
+- 타입 파라미터로 명시할 수 있는것은 참조 타입(Reference Type) 밖에 없다.
+    - int, double, char 같은 기본형(primitive type)은 올 수 없음
+    - Wrapper 클래스
+
+
+
+<br>
 
 reference)
 https://st-lab.tistory.com/153
