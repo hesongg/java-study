@@ -165,12 +165,12 @@
 
     public static void main(String[] args) {
         //Integer는 Number의 자손 타입이 맞으므로 정상
-        NumberClass i = new NumberClass<Integer>();
+        NumberClass<Integer> i = new NumberClass<>();
         i.number = 123;
         System.out.println(i.getThis());
         
         //String은 Number의 자손 타입이 아니기때문에 오류가 발생한다 !
-        NumberClass s = new NumberClass<String>();
+        NumberClass<String> s = new NumberClass<>();
     }
     ```
 
