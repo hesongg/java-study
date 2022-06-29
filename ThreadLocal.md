@@ -108,4 +108,8 @@
     - 출력 결과에서 testThread2 쓰레드의 ThreadLocal 값을 출력해본 뒤에 다시 testThread1 쓰레드를 실행해봤을 때, testThread2 쓰레드와 개별적으로 값을 가지는걸 확인할 수 있다.
     
     - 마지막 라인 ```testThread1.run();``` 밑에 DomainThreadLocal 값을 출력해보면 ThreadLocal의 ```remove()``` 메서드를 호출 했기 때문에 오류가 발생하는 걸 확인할 수 있다.
-         
+       
+ 
+ #### 실무에서 사용한 이유
+ 
+ - 
